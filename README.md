@@ -27,3 +27,5 @@ GET php/api/index.php/student/idfromemail
 ## To Do
 1. Admin page that can have settings to change url etc, or config file
 2. Work on Google API oauth
+3. Remove/secure client keys
+4. Add .env to gitignore
