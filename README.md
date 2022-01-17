@@ -1,5 +1,5 @@
-# Powerschool Calendar App
-Powerschool Calendar App is a application developed for Chinese International School that easily connects the Powerschool calendar to Google Calendar.
+# PowerSchool Calendar App
+PowerSchool Calendar App is a application developed for Chinese International School that easily connects the PowerSchool calendar to Google Calendar.
 
 ## Usage Endpoints
 ```bash
