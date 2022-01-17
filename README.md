@@ -29,3 +29,6 @@ GET php/api/index.php/student/idfromemail
 2. Work on Google API oauth
 3. Remove/secure client keys
 4. Add .env to gitignore
+5. Fix edge-cases, e.g. student has no course entries
+6. Apply request batching to Google Calendar API for speed
+7. Store Google Calendar secondary calendar id on database so app knows when already created

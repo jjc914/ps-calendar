@@ -38,8 +38,13 @@
       $results = $this->run_statement('INSERT INTO user (id, secret) VALUES (?, ?) ON DUPLICATE KEY UPDATE
 secret = ?, active = 0', 'iss', $id, $secret, $secret);
 
+      $state = new stdClass();
+      $state->id = $id;
+      $state->secret = $secret;
+
       $subject = 'test';
       $message = getenv('URL_ROOT') . '/client-side/html/login.html?id=' . $id . '&secret=' . $secret;
+      // $message = 'https://accounts.google.com/o/oauth2/v2/auth/identifier?response_type=code&client_id=253727930094-nl6m9igcuk2lhdc4qlva72em4kfuqa01.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8888%2Fclient-side%2Fhtml%2Flogin.html&scope=openid%20profile%20email&state=' . urlencode(json_encode($state)) . '&nonce=8qsujb9GS0vsnV3WCH6D&flowName=GeneralOAuthFlow';
       $headers = 'from: noreply@chasnov.joshua.com\r\n';
       mail($email, $subject, $message, $headers);
     }
@@ -87,10 +92,9 @@ secret = ?, active = 0', 'iss', $id, $secret, $secret);
       $stmt->execute();
 
       $results = $stmt->get_result();
+      $allresults = NULL;
       if ($results) {
         $allresults = $results->fetch_all(MYSQLI_ASSOC);
-      } else {
-        $allresults = NULL;
       }
       $stmt->close();
       return $allresults;

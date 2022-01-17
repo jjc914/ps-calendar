@@ -1,42 +1,99 @@
-function checkSecret() {
-  // let urlData = window.location.search;
-  //
-  // let xHttp = new XMLHttpRequest();
-  // let url = 'http://localhost:8888/server-side/php/api/index.php/student/login';
-  // let email = document.getElementById('emailInput').value;
-  // xHttp.open('POST', url, true);
-  // xHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  //
-  // xHttp.onreadystatechange = function() {
-  //   if (xHttp.readyState == 4) {
-  //     changePage(xHttp);
-  //   }
-  // }
-  // xHttp.send(urlData.substring(1));
-  changePage({ status: 200 });
+// function changePage(resultHttp) {
+//   if (resultHttp.status == 200) {
+//     // window.onbeforeunload = logout;
+//     let xHttp = new XMLHttpRequest();
+//
+//     xHttp.onreadystatechange = function (e) {
+//       if (xHttp.readyState == 4 && xHttp.status == 200) {
+//         setInnerHTML(document.getElementById('content'), xHttp.responseText);
+//       }
+//     }
+//
+//     xHttp.open("GET", "http://localhost:8888/client-side/html/dashboard.html", true);
+//     xHttp.setRequestHeader('Content-type', 'text/html');
+//     xHttp.send();
+//   }
+//   else if (resultHttp.status == 500) {
+//     document.getElementById('emailInput').innerHTML = 'Failed login. Perhaps you\'re already logged in on another device? Try logging in again with a new link.';
+//   }
+// }
+//
+//
+//
+// // function decodeQuery(query) {
+// //   query = query.substring(1);
+// //   let dict = {};
+// //   let params = query.split('&');
+// //   for (let i = 0; i < params.length; i++) {
+// //     let pair = params[i].split('=');
+// //     dict[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+// //   }
+// //   return dict;
+// // }
+//
+// window.onload = checkSecret;
+var CLIENT_ID = '253727930094-nl6m9igcuk2lhdc4qlva72em4kfuqa01.apps.googleusercontent.com';
+var API_KEY = 'AIzaSyCLvITyWhSls3C4HF1tKQevx2hHnCAwLjY';
+
+// Array of API discovery doc URLs for APIs used by the quickstart
+var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+
+// Authorization scopes required by the API; multiple scopes can be
+// included, separated by spaces.
+var SCOPES = "https://www.googleapis.com/auth/calendar";
+
+function handleGoogleClientLoad() {
+  gapi.load('client:auth2', initGoogleClient);
 }
 
-function changePage(resultHttp) {
-  if (resultHttp.status == 200) {
-    // window.onbeforeunload = logout;
-    let xHttp = new XMLHttpRequest();
+function initGoogleClient() {
+  gapi.client.init({
+    apiKey: API_KEY,
+    clientId: CLIENT_ID,
+    discoveryDocs: DISCOVERY_DOCS,
+    scope: SCOPES
+  }).then(function () {
+    gapi.auth2.getAuthInstance().isSignedIn.listen(updateGoogleSignInStatus);
 
-    xHttp.onreadystatechange = function (e) {
-      if (xHttp.readyState == 4 && xHttp.status == 200) {
-        setInnerHTML(document.getElementById('content'), xHttp.responseText);
-      }
+    updateGoogleSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+  }, function(error) {
+    appendPre(JSON.stringify(error, null, 2));
+  });
+}
+
+function updateGoogleSignInStatus(isSignedIn) {
+  if (isSignedIn) {
+    // window.onbeforeunload = onPSSignOut;
+    getCalendarDays();
+  } else {
+    checkPSSignedIn();
+  }
+}
+
+function handleGoogleSignIn() {
+  gapi.auth2.getAuthInstance().signIn();
+}
+
+function checkPSSignedIn() {
+  let urlData = window.location.search.substring(1);
+
+  let xHttp = new XMLHttpRequest();
+  let url = 'http://localhost:8888/server-side/php/api/index.php/student/login';
+  let email = document.getElementById('emailInput').value;
+  xHttp.open('POST', url, true);
+  xHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+  xHttp.onreadystatechange = function() {
+    if (xHttp.readyState == 4 && xHttp.status == 200) {
+      handleGoogleSignIn();
+    } else if (xHttp.status == 500) {
+      handlePSNotSignedIn(xHttp);
     }
-
-    xHttp.open("GET", "http://localhost:8888/client-side/html/dashboard.html", true);
-    xHttp.setRequestHeader('Content-type', 'text/html');
-    xHttp.send();
   }
-  else if (resultHttp.status == 500) {
-    document.getElementById('emailInput').innerHTML = 'Failed login. Perhaps you\'re already logged in on another device? Try logging in again with a new link.';
-  }
+  xHttp.send(urlData);
 }
 
-function logout() {
+function onPSSignOut() {
   let urlData = window.location.search;
 
   let xHttp = new XMLHttpRequest();
@@ -47,8 +104,146 @@ function logout() {
     if (xHttp.status == 200 && xHttp.readyState == 4) {
     }
   }
+  console.log(urlData.substring(1));
   xHttp.send(urlData.substring(1));
+
+  gapi.auth2.getAuthInstance().signOut();
   return '';
+}
+
+function handlePSNotSignedIn(xHttp) {
+  setInnerHTML(document.getElementById('content'), "User not logged in to PS tool!");
+}
+
+function getCalendarDays() {
+  let xHttp = new XMLHttpRequest();
+  xHttp.onreadystatechange = function (e) {
+    if (xHttp.readyState == 4 && xHttp.status == 200) {
+      let dayMap = JSON.parse(xHttp.responseText);
+      getCourses(dayMap);
+    }
+  };
+  xHttp.open('GET', 'http://localhost:8888/server-side/php/api/index.php/calendar/days', true);
+  xHttp.setRequestHeader('Content-type', 'text/plain');
+  xHttp.send();
+}
+
+function getCourses(dayMap) {
+  let urlData = window.location.search;
+
+  let xHttp = new XMLHttpRequest();
+  xHttp.onreadystatechange = function (e) {
+    if (xHttp.readyState == 4 && xHttp.status == 200) {
+      let courses = JSON.parse(xHttp.responseText);
+      getCourseDays(courses, dayMap);
+    }
+  };
+  xHttp.open('GET', 'http://localhost:8888/server-side/php/api/index.php/student/courses?' + urlData.substring(1), true);
+  xHttp.setRequestHeader('Content-type', 'text/plain');
+  xHttp.send();
+}
+
+function getCourseDays(courses, dayMap) {
+  let courseDays = [];
+  for (let i = 0; i < courses.length; i++) {
+    courseDays[courses[i].id] = [];
+    let expression = courses[i].expression;
+    let splitExpression = expression.split(/, /);
+    for (let k = 0; k < splitExpression.length; k++) {
+      let exp = splitExpression[k];
+      let cycleDay = exp.match(/\(([^\(\)]+)\)/)[1];
+      let period = exp.match(/(.+)\(([^\(\)]+)\)/)[1];
+      let name = courses[i].name;
+      let room = courses[i].room;
+      let teacher = courses[i].teacher;
+      courseDays[courses[i].id].push({
+        'cycleDay': cycleDay,
+        'period': period,
+        'name': name,
+        'room': room,
+        'teacher': teacher
+      });
+    }
+  }
+  let periodTimes = {
+    '1': { 'start': '07:55:00', 'end' : '09:00:00' },
+    '2': { 'start': '09:05:00', 'end' : '10:10:00' },
+    '3': { 'start': '11:40:00', 'end' : '12:45:00' },
+    '4': { 'start': '13:55:00', 'end' : '15:00:00' }
+  };
+  createSecondaryCalendar(dayMap, courseDays, periodTimes);
+}
+
+function createSecondaryCalendar(dayMap, courseDays, periodTimes) {
+  console.log(gapi.client.calendar.calendars);
+
+  let calendarRequest = gapi.client.calendar.calendars.insert({
+    'resource': {
+      'summary': 'PowerSchool Schedule'
+    }
+  });
+  calendarRequest.execute(function(calendar) {
+    addCalendarEvents(calendar.id, dayMap, courseDays, periodTimes);
+  });
+}
+
+function addCalendarEvents(calendarID, dayMap, courseDays, periodTimes) {
+  // for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < dayMap.length; i++) {
+    let classes = [];
+    for (let k = 0; k < courseDays.length; k++) {
+      if (!courseDays[k]) {
+        continue;
+      }
+      for (let l = 0; l < courseDays[k].length; l++) {
+        if (dayMap[i].cycle === courseDays[k][l].cycleDay) {
+          classes.push(k);
+          break;
+        }
+      }
+    }
+
+    for (let k = 0; k < classes.length; k++) {
+    // for (let k = 0; k < 1; k++) {
+      let courseData = courseDays[classes[k]][0];
+      let event = {
+        'summary': courseData.name,
+        'location': 'Room ' + courseData.room,
+        'description': '',
+        'start': {
+          'dateTime': dayMap[i].date + 'T' + periodTimes[courseData.period].start,
+          'timeZone': 'Asia/Hong_Kong'
+        },
+        'end': {
+          'dateTime': dayMap[i].date + 'T' + periodTimes[courseData.period].end,
+          'timeZone': 'Asia/Hong_Kong'
+        },
+        'recurrence': [
+          // 'RRULE:FREQ=DAILY;COUNT=2'
+        ],
+        'attendees': [
+          // {'email': 'lpage@example.com'},
+          // {'email': 'sbrin@example.com'}
+        ],
+        'reminders': {
+          'useDefault': true,
+          // 'overrides': [
+          //   {'method': 'email', 'minutes': 24 * 60},
+          //   {'method': 'popup', 'minutes': 10}
+          // ]
+        }
+      };
+      // console.log(event);
+
+      let eventRequest = gapi.client.calendar.events.insert({
+        'calendarId': calendarID,
+        'resource': event
+      });
+      eventRequest.execute(function(event) {
+        console.log('Event created: ' + event.htmlLink);
+      });
+    }
+  }
 }
 
 function setInnerHTML(elm, html) {
@@ -61,16 +256,3 @@ function setInnerHTML(elm, html) {
     oldScript.parentNode.replaceChild(newScript, oldScript);
   });
 }
-
-// function decodeQuery(query) {
-//   query = query.substring(1);
-//   let dict = {};
-//   let params = query.split('&');
-//   for (let i = 0; i < params.length; i++) {
-//     let pair = params[i].split('=');
-//     dict[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
-//   }
-//   return dict;
-// }
-
-window.onload = checkSecret;

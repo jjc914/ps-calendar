@@ -12,6 +12,10 @@
 
 <body>
   <script src="../js/login.js" defer></script>
+  <script async defer src="https://apis.google.com/js/api.js"
+      onload="handleGoogleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
   <p id="emailInput"></p>
   <div id="content"></div>
 </body>
