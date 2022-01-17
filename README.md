@@ -18,10 +18,25 @@ POST php/api/index.php/student/login
 #   OUTPUT: NONE
 POST php/api/index.php/student/logout
 
-# uses email address to get user id
+# gets user id of email address
 #   INPUT:  email
 #   OUTPUT: id
 GET php/api/index.php/student/idfromemail
+
+# gets all courses of specified user
+#   INPUT:  id, secret
+#   OUTPUT: jsonCourses
+GET php/api/index.php/student/courses
+
+# gets all cycle days of specified course
+#   INPUT:  id
+#   OUTPUT: jsonCycleDays
+GET php/api/index.php/course/cycleday
+
+# gets all calendar days
+#   INPUT:  NONE
+#   OUTPUT: jsonCalendarDays
+GET php/api/index.php/calendar/days
 ```
 
 ## To Do
@@ -30,6 +45,7 @@ GET php/api/index.php/student/idfromemail
 - [x] ~~Create server side scripts to access~~ database data securely
 - [ ] Fix edge-cases, e.g. student has no course entries
 - [ ] Store Google Calendar secondary calendar id on database so app knows when already created
+- [ ] Create admin script for adding data to database
 
 ### Client Side
 - [x] ~~Sign user in using email confirmation~~
