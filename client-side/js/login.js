@@ -1,45 +1,8 @@
-// function changePage(resultHttp) {
-//   if (resultHttp.status == 200) {
-//     // window.onbeforeunload = logout;
-//     let xHttp = new XMLHttpRequest();
-//
-//     xHttp.onreadystatechange = function (e) {
-//       if (xHttp.readyState == 4 && xHttp.status == 200) {
-//         setInnerHTML(document.getElementById('content'), xHttp.responseText);
-//       }
-//     }
-//
-//     xHttp.open("GET", "http://localhost:8888/client-side/html/dashboard.html", true);
-//     xHttp.setRequestHeader('Content-type', 'text/html');
-//     xHttp.send();
-//   }
-//   else if (resultHttp.status == 500) {
-//     document.getElementById('emailInput').innerHTML = 'Failed login. Perhaps you\'re already logged in on another device? Try logging in again with a new link.';
-//   }
-// }
-//
-//
-//
-// // function decodeQuery(query) {
-// //   query = query.substring(1);
-// //   let dict = {};
-// //   let params = query.split('&');
-// //   for (let i = 0; i < params.length; i++) {
-// //     let pair = params[i].split('=');
-// //     dict[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
-// //   }
-// //   return dict;
-// // }
-//
-// window.onload = checkSecret;
 var CLIENT_ID = '253727930094-nl6m9igcuk2lhdc4qlva72em4kfuqa01.apps.googleusercontent.com';
 var API_KEY = 'AIzaSyCLvITyWhSls3C4HF1tKQevx2hHnCAwLjY';
 
-// Array of API discovery doc URLs for APIs used by the quickstart
 var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
 
-// Authorization scopes required by the API; multiple scopes can be
-// included, separated by spaces.
 var SCOPES = "https://www.googleapis.com/auth/calendar";
 
 function handleGoogleClientLoad() {
@@ -63,7 +26,7 @@ function initGoogleClient() {
 
 function updateGoogleSignInStatus(isSignedIn) {
   if (isSignedIn) {
-    // window.onbeforeunload = onPSSignOut;
+    window.onbeforeunload = onPSSignOut;
     getCalendarDays();
   } else {
     checkPSSignedIn();
@@ -188,7 +151,6 @@ function createSecondaryCalendar(dayMap, courseDays, periodTimes) {
 }
 
 function addCalendarEvents(calendarID, dayMap, courseDays, periodTimes) {
-  // for (let i = 0; i < 1; i++) {
   for (let i = 0; i < dayMap.length; i++) {
     let classes = [];
     for (let k = 0; k < courseDays.length; k++) {
@@ -204,7 +166,6 @@ function addCalendarEvents(calendarID, dayMap, courseDays, periodTimes) {
     }
 
     for (let k = 0; k < classes.length; k++) {
-    // for (let k = 0; k < 1; k++) {
       let courseData = courseDays[classes[k]][0];
       let event = {
         'summary': courseData.name,
@@ -233,7 +194,6 @@ function addCalendarEvents(calendarID, dayMap, courseDays, periodTimes) {
           // ]
         }
       };
-      // console.log(event);
 
       let eventRequest = gapi.client.calendar.events.insert({
         'calendarId': calendarID,

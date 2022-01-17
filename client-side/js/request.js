@@ -21,6 +21,3 @@ function createSecret() {
 }
 
 document.getElementById("submitInput").addEventListener("click", () => { createSecret(); }, false);
-
-//TODO: - create new sub-calendar to import ps calendar (1st July - 30th June)
-// - switch to one-time password with hashed link
