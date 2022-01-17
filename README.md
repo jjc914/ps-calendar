@@ -25,10 +25,10 @@ GET php/api/index.php/student/idfromemail
 ```
 
 ## To Do
-[] Admin page that can have settings to change url etc, or config file
-[] Work on Google API oauth
-[] Remove/secure client keys
-[] Add .env to gitignore
-[] Fix edge-cases, e.g. student has no course entries
-[] Apply request batching to Google Calendar API for speed
-[] Store Google Calendar secondary calendar id on database so app knows when already created
+[ ] Admin page that can have settings to change url etc, or config file
+[ ] Work on Google API oauth
+[ ] Remove/secure client keys
+[ ] Add .env to gitignore
+[ ] Fix edge-cases, e.g. student has no course entries
+[ ] Apply request batching to Google Calendar API for speed
+[ ] Store Google Calendar secondary calendar id on database so app knows when already created
