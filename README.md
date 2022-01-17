@@ -2,6 +2,7 @@
 PowerSchool Calendar App is a application developed for Chinese International School that easily connects the PowerSchool calendar to Google Calendar.
 
 ## Usage Endpoints
+### POST
 ```bash
 # generates a user secret and sends it to the user's email
 #   INPUT:  email
@@ -17,7 +18,10 @@ POST php/api/index.php/student/login
 #   INPUT:  id, secret
 #   OUTPUT: NONE
 POST php/api/index.php/student/logout
+```
 
+### GET
+```bash
 # gets user id of email address
 #   INPUT:  email
 #   OUTPUT: id
