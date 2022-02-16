@@ -62,3 +62,4 @@ GET php/api/index.php/calendar/days
 - [ ] Create admin page that can have settings to change url etc, or config file
 - [ ] Add .env to gitignore
 - [ ] Add comments to make code more readable
+- [ ] Hide developer keys 
