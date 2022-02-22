@@ -61,11 +61,11 @@ git update-index --assume-unchanged server-side/.env
 - [x] ~~Sign user in using email confirmation~~
 - [x] ~~Create client side scripts to get database data based on user sign in~~
 - [ ] Apply request batching to Google Calendar API for speed
-- [ ] Move keys to .env file
+- [x] ~~Move keys to .env file~~
 - [ ] Create user UI for changing options (create new secondary calendar y/n, secondary calendar name, color, etc)
 
 ### Other
-- [ ] Create admin page that can have settings to change url etc, or config file
-- [ ] Add .env to gitignore
+- [x] ~~Create admin page that can have settings to change url etc, or config file~~
+- [x] ~~Add .env to gitignore~~
 - [ ] Add comments to make code more readable
-- [ ] Hide developer keys 
+- [x] ~~Hide developer keys ~~
