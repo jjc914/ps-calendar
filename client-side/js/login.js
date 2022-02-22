@@ -1,20 +1,19 @@
 var CLIENT_ID = '253727930094-nl6m9igcuk2lhdc4qlva72em4kfuqa01.apps.googleusercontent.com';
 var API_KEY = 'AIzaSyCLvITyWhSls3C4HF1tKQevx2hHnCAwLjY';
 
-var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
-
-var SCOPES = "https://www.googleapis.com/auth/calendar";
-
 function handleGoogleClientLoad() {
   gapi.load('client:auth2', initGoogleClient);
 }
 
 function initGoogleClient() {
+  var discoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+  var scope = "https://www.googleapis.com/auth/calendar";
+
   gapi.client.init({
     apiKey: API_KEY,
     clientId: CLIENT_ID,
-    discoveryDocs: DISCOVERY_DOCS,
-    scope: SCOPES
+    discoveryDocs: discoveryDocs,
+    scope: scope
   }).then(function () {
     gapi.auth2.getAuthInstance().isSignedIn.listen(updateGoogleSignInStatus);
 
@@ -41,7 +40,7 @@ function checkPSSignedIn() {
   let urlData = window.location.search.substring(1);
 
   let xHttp = new XMLHttpRequest();
-  let url = config['serverRoot'] + '/php/api/index.php/student/login';
+  let url = config['SERVER_ROOT'] + '/php/api/index.php/student/login';
   let email = document.getElementById('emailInput').value;
   xHttp.open('POST', url, true);
   xHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -60,7 +59,7 @@ function onPSSignOut() {
   let urlData = window.location.search;
 
   let xHttp = new XMLHttpRequest();
-  let url = config['serverRoot'] + '/php/api/index.php/student/logout';
+  let url = config['SERVER_ROOT'] + '/php/api/index.php/student/logout';
   xHttp.open('POST', url, true);
   xHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xHttp.onreadystatechange = function() {
@@ -86,7 +85,7 @@ function getCalendarDays() {
       getCourses(dayMap);
     }
   };
-  xHttp.open('GET', config['serverRoot'] + '/php/api/index.php/calendar/days', true);
+  xHttp.open('GET', config['SERVER_ROOT'] + '/php/api/index.php/calendar/days', true);
   xHttp.setRequestHeader('Content-type', 'text/plain');
   xHttp.send();
 }
@@ -101,7 +100,7 @@ function getCourses(dayMap) {
       getCourseDays(courses, dayMap);
     }
   };
-  xHttp.open('GET', config['serverRoot'] + '/php/api/index.php/student/courses?' + urlData.substring(1), true);
+  xHttp.open('GET', config['SERVER_ROOT'] + '/php/api/index.php/student/courses?' + urlData.substring(1), true);
   xHttp.setRequestHeader('Content-type', 'text/plain');
   xHttp.send();
 }

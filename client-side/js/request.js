@@ -1,6 +1,6 @@
 function createSecret() {
   let xHttp = new XMLHttpRequest();
-  let url = config['serverRoot'] + '/php/api/index.php/student';
+  let url = config['SERVER_ROOT'] + '/php/api/index.php/student';
   let email = document.getElementById('emailInput').value;
   let params = 'email=' + email;
   xHttp.open('POST', url, true);
