@@ -41,7 +41,7 @@ function checkPSSignedIn() {
   let urlData = window.location.search.substring(1);
 
   let xHttp = new XMLHttpRequest();
-  let url = 'http://localhost:8888/server-side/php/api/index.php/student/login';
+  let url = config['serverRoot'] + '/php/api/index.php/student/login';
   let email = document.getElementById('emailInput').value;
   xHttp.open('POST', url, true);
   xHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -60,7 +60,7 @@ function onPSSignOut() {
   let urlData = window.location.search;
 
   let xHttp = new XMLHttpRequest();
-  let url = 'http://localhost:8888/server-side/php/api/index.php/student/logout';
+  let url = config['serverRoot'] + '/php/api/index.php/student/logout';
   xHttp.open('POST', url, true);
   xHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xHttp.onreadystatechange = function() {
@@ -86,7 +86,7 @@ function getCalendarDays() {
       getCourses(dayMap);
     }
   };
-  xHttp.open('GET', 'http://localhost:8888/server-side/php/api/index.php/calendar/days', true);
+  xHttp.open('GET', config['serverRoot'] + '/php/api/index.php/calendar/days', true);
   xHttp.setRequestHeader('Content-type', 'text/plain');
   xHttp.send();
 }
@@ -101,7 +101,7 @@ function getCourses(dayMap) {
       getCourseDays(courses, dayMap);
     }
   };
-  xHttp.open('GET', 'http://localhost:8888/server-side/php/api/index.php/student/courses?' + urlData.substring(1), true);
+  xHttp.open('GET', config['serverRoot'] + '/php/api/index.php/student/courses?' + urlData.substring(1), true);
   xHttp.setRequestHeader('Content-type', 'text/plain');
   xHttp.send();
 }
