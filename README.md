@@ -69,3 +69,4 @@ git update-index --skip-worktree server-side/.env
 - [x] ~~Add .env to gitignore~~
 - [ ] Add comments to make code more readable
 - [x] ~~Hide developer keys~~
+- [ ] Push database onto github
