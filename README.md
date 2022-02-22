@@ -45,8 +45,8 @@ GET php/api/index.php/calendar/days
 
 In order to avoid changing the .config and .env after cloning, make sure to run:
 ```bash
-git update-index --assume-unchanged client-side/.config
-git update-index --assume-unchanged server-side/.env
+git update-index --skip-worktree client-side/.config
+git update-index --skip-worktree server-side/.env
 ```
 
 ## To Do
