@@ -68,4 +68,4 @@ git update-index --assume-unchanged server-side/.env
 - [x] ~~Create admin page that can have settings to change url etc, or config file~~
 - [x] ~~Add .env to gitignore~~
 - [ ] Add comments to make code more readable
-- [x] ~~Hide developer keys ~~
+- [x] ~~Hide developer keys~~
