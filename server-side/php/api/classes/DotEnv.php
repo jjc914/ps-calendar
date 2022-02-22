@@ -10,11 +10,10 @@
       $path = $this->path;
       $file = fopen('../../' . $path, 'r') or die('Unable to open file ' . $path);
       $i = 1;
-      while(!feof($file)) {
-        $line = fgets($file);
+      while (($line = fgets($file)) !== false) {
         $line = trim($line);
         if ($line == '') {
-          break;
+          continue;
         }
         if (strpos($line, '#') === 0) {
           continue;
