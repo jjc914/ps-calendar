@@ -43,6 +43,12 @@ GET php/api/index.php/course/cycleday
 GET php/api/index.php/calendar/days
 ```
 
+In order to avoid changing the .config and .env after cloning, make sure to run:
+```bash
+git update-index --assume-unchanged client-side/.config
+git update-index --assume-unchanged server-side/.env
+```
+
 ## To Do
 ### Server Side
 - [x] ~~Create database relations to store class data~~
