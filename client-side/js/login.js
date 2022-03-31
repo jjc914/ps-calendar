@@ -1,5 +1,5 @@
-var CLIENT_ID = '253727930094-nl6m9igcuk2lhdc4qlva72em4kfuqa01.apps.googleusercontent.com';
-var API_KEY = 'AIzaSyCLvITyWhSls3C4HF1tKQevx2hHnCAwLjY';
+var CLIENT_ID = config['CLIENT_ID'];
+var API_KEY = config['API_KEY'];
 
 function handleGoogleClientLoad() {
   gapi.load('client:auth2', initGoogleClient);
