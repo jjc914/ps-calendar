@@ -1,6 +1,3 @@
-var CLIENT_ID = config['CLIENT_ID'];
-var API_KEY = config['API_KEY'];
-
 function handleGoogleClientLoad() {
   gapi.load('client:auth2', initGoogleClient);
 }
@@ -10,8 +7,8 @@ function initGoogleClient() {
   var scope = "https://www.googleapis.com/auth/calendar";
 
   gapi.client.init({
-    apiKey: API_KEY,
-    clientId: CLIENT_ID,
+    apiKey: config['API_KEY'],
+    clientId: config['CLIENT_ID'],
     discoveryDocs: discoveryDocs,
     scope: scope
   }).then(function () {
@@ -19,7 +16,7 @@ function initGoogleClient() {
 
     updateGoogleSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
   }, function(error) {
-    appendPre(JSON.stringify(error, null, 2));
+    console.log("ERROR");
   });
 }
 
@@ -104,67 +101,107 @@ function getCourses(dayMap) {
   xHttp.send();
 }
 
+// function getCourseDays(courses, dayMap) {
+//   let courseDays = [];
+//   for (let i = 0; i < courses.length; i++) {
+//     courseDays[courses[i].id] = [];
+//     let expression = courses[i].expression;
+//     let splitExpression = expression.split(/, /);
+//     for (let k = 0; k < splitExpression.length; k++) {
+//       let exp = splitExpression[k];
+//       let cycleDay = exp.match(/\(([^\(\)]+)\)/)[1];
+//       let period = exp.match(/(.+)\(([^\(\)]+)\)/)[1];
+//       console.log(cycleDay);
+//       console.log(period);
+//       let name = courses[i].name;
+//       let room = courses[i].room;
+//       let teacher = courses[i].teacher;
+//       courseDays[courses[i].id].push({
+//         'cycleDay': cycleDay,
+//         'period': period,
+//         'name': name,
+//         'room': room,
+//         'teacher': teacher
+//       });
+//     }
+//   }
+//   let periodTimes = {
+//     '1': { 'start': '07:55:00', 'end' : '09:00:00' },
+//     '2': { 'start': '09:05:00', 'end' : '10:10:00' },
+//     '3': { 'start': '11:40:00', 'end' : '12:45:00' },
+//     '4': { 'start': '13:55:00', 'end' : '15:00:00' }
+//   };
+//   createSecondaryCalendar(dayMap, courseDays, periodTimes);
+// }
+
 function getCourseDays(courses, dayMap) {
+  let periodTimes = {
+    '1': { 'start': '07:55:00', 'end': '09:00:00' },
+    '2': { 'start': '09:05:00', 'end': '10:10:00' },
+    '3': { 'start': '11:15:00', 'end': '12:20:00' },
+    '4': { 'start': '12:40:00', 'end': '13:45:00' },
+    'F': { 'start': '10:30:00', 'end': '11:10:00' }
+  };
+  let finished = 0;
   let courseDays = [];
   for (let i = 0; i < courses.length; i++) {
-    courseDays[courses[i].id] = [];
-    let expression = courses[i].expression;
-    let splitExpression = expression.split(/, /);
-    for (let k = 0; k < splitExpression.length; k++) {
-      let exp = splitExpression[k];
-      let cycleDay = exp.match(/\(([^\(\)]+)\)/)[1];
-      let period = exp.match(/(.+)\(([^\(\)]+)\)/)[1];
-      let name = courses[i].name;
-      let room = courses[i].room;
-      let teacher = courses[i].teacher;
-      courseDays[courses[i].id].push({
-        'cycleDay': cycleDay,
-        'period': period,
-        'name': name,
-        'room': room,
-        'teacher': teacher
-      });
-    }
+    let xHttp = new XMLHttpRequest();
+    xHttp.onreadystatechange = function (e) {
+      if (xHttp.readyState == 4 && xHttp.status == 200) {
+        courseDays = courseDays.concat(JSON.parse(xHttp.responseText));
+        finished++;
+        if (finished >= courses.length) {
+          console.log("courses");
+          console.log(courses);
+          console.log("dayMap");
+          console.log(dayMap);
+          console.log("courseDays");
+          console.log(courseDays);
+          console.log("periodTimes");
+          console.log(periodTimes);
+          createSecondaryCalendar(courses, dayMap, courseDays, periodTimes);
+        }
+      }
+    };
+    xHttp.open('GET', config['SERVER_ROOT'] + 'php/api/index.php/course/days?id=' + courses[i].id, true);
+    xHttp.setRequestHeader('Content-type', 'text/plain');
+    xHttp.send();
   }
-  let periodTimes = {
-    '1': { 'start': '07:55:00', 'end' : '09:00:00' },
-    '2': { 'start': '09:05:00', 'end' : '10:10:00' },
-    '3': { 'start': '11:40:00', 'end' : '12:45:00' },
-    '4': { 'start': '13:55:00', 'end' : '15:00:00' }
-  };
-  createSecondaryCalendar(dayMap, courseDays, periodTimes);
 }
 
-function createSecondaryCalendar(dayMap, courseDays, periodTimes) {
+function createSecondaryCalendar(courses, dayMap, courseDays, periodTimes) {
   let calendarRequest = gapi.client.calendar.calendars.insert({
     'resource': {
       'summary': 'PowerSchool Schedule'
     }
   });
-  calendarRequest.execute(function(calendar) {
-    console.log(calendar);
-    initCalendar(calendar.id, dayMap, courseDays, periodTimes);
+  calendarRequest.execute(function(callback) {
+    if (callback.id) {
+      initCalendar(callback.id, courses, dayMap, courseDays, periodTimes);
+    }
   });
 }
 
-function initCalendar(calendarID, dayMap, courseDays, periodTimes) {
+function initCalendar(calendarID, courses, dayMap, courseDays, periodTimes) {
+  let urlData = window.location.search;
+
   let xHttp = new XMLHttpRequest();
-  let url = config['SERVER_ROOT'] + 'php/api/index.php/student/calendarid';
+  let url = config['SERVER_ROOT'] + 'php/api/index.php/student/calendarid' + urlData;
 
   xHttp.open('GET', url, true);
   xHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xHttp.onreadystatechange = function() {
     if (xHttp.readyState == 4 && xHttp.status == 200) {
       if (xHttp.responseText) {
-        console.log("Delete");
         let calendarRequest = gapi.client.calendar.calendars.delete({
           'calendarId': xHttp.responseText
         });
-        calendarRequest.execute(function(calendar) {
-          addCalendarEvents(calendarID, dayMap, courseDays, periodTimes);
+        calendarRequest.execute(function(callback) {
+          console.log(callback);
+          addCalendarEvents(calendarID, courses, dayMap, courseDays, periodTimes);
         });
       } else {
-        addCalendarEvents(calendarID, dayMap, courseDays, periodTimes);
+        addCalendarEvents(calendarID, courses, dayMap, courseDays, periodTimes);
       }
 
     } else if (xHttp.status == 500) {
@@ -174,7 +211,7 @@ function initCalendar(calendarID, dayMap, courseDays, periodTimes) {
   xHttp.send();
 }
 
-function addCalendarEvents(calendarID, dayMap, courseDays, periodTimes) {
+function addCalendarEvents(calendarID, coursesRaw, dayMap, courseDays, periodTimes) {
   let urlData = window.location.search;
 
   let xHttp = new XMLHttpRequest();
@@ -184,66 +221,62 @@ function addCalendarEvents(calendarID, dayMap, courseDays, periodTimes) {
 
   xHttp.onreadystatechange = function() {
     if (xHttp.readyState == 4 && xHttp.status == 200) {
-      console.log(xHttp.responseText);
     } else if (xHttp.status == 500) {
       handlePSNotSignedIn(xHttp);
     }
   }
   xHttp.send(urlData.substring(1) + '&calendarid=' + calendarID);
 
+  let requestBatch = gapi.client.newBatch();
+
+  courses = [];
+  for (let i = 0; i < coursesRaw.length; i++) {
+    courses[coursesRaw[i]['id']] = coursesRaw[i];
+  }
   for (let i = 0; i < dayMap.length; i++) {
-    let classes = [];
     for (let k = 0; k < courseDays.length; k++) {
-      if (!courseDays[k]) {
-        continue;
-      }
-      for (let l = 0; l < courseDays[k].length; l++) {
-        if (dayMap[i].cycle === courseDays[k][l].cycleDay) {
-          classes.push(k);
-          break;
-        }
-      }
-    }
+      if (courseDays[k]['cycle_day'] === dayMap[i]['cycle']) {
+        let id = courseDays[k]['course_id'];
+        let day = dayMap[i]['cycle_day'];
+        let period = courseDays[k]['period'];
+        let event = {
+          'summary': courses[id]['name'],
+          'location': 'Room ' + courses[id]['room'],
+          'description': '',
+          'start': {
+            'dateTime': day + 'T' + periodTimes[period].start,
+            'timeZone': 'Asia/Hong_Kong'
+          },
+          'end': {
+            'dateTime': day + 'T' + periodTimes[period].end,
+            'timeZone': 'Asia/Hong_Kong'
+          },
+          'recurrence': [
+            // 'RRULE:FREQ=DAILY;COUNT=2'
+          ],
+          'attendees': [
+            // {'email': 'lpage@example.com'},
+            // {'email': 'sbrin@example.com'}
+          ],
+          'reminders': {
+            'useDefault': true,
+            // 'overrides': [
+            //   {'method': 'email', 'minutes': 24 * 60},
+            //   {'method': 'popup', 'minutes': 10}
+            // ]
+          }
+        };
 
-    for (let k = 0; k < classes.length; k++) {
-      let courseData = courseDays[classes[k]][0];
-      let event = {
-        'summary': courseData.name,
-        'location': 'Room ' + courseData.room,
-        'description': '',
-        'start': {
-          'dateTime': dayMap[i].date + 'T' + periodTimes[courseData.period].start,
-          'timeZone': 'Asia/Hong_Kong'
-        },
-        'end': {
-          'dateTime': dayMap[i].date + 'T' + periodTimes[courseData.period].end,
-          'timeZone': 'Asia/Hong_Kong'
-        },
-        'recurrence': [
-          // 'RRULE:FREQ=DAILY;COUNT=2'
-        ],
-        'attendees': [
-          // {'email': 'lpage@example.com'},
-          // {'email': 'sbrin@example.com'}
-        ],
-        'reminders': {
-          'useDefault': true,
-          // 'overrides': [
-          //   {'method': 'email', 'minutes': 24 * 60},
-          //   {'method': 'popup', 'minutes': 10}
-          // ]
-        }
-      };
-
-      let eventRequest = gapi.client.calendar.events.insert({
-        'calendarId': calendarID,
-        'resource': event
-      });
-      eventRequest.execute(function(event) {
-        console.log('Event created: ' + event.htmlLink);
-      });
+        let eventRequest = gapi.client.calendar.events.insert({
+          'calendarId': calendarID,
+          'resource': event
+        });
+        requestBatch.add(eventRequest);
+      }
     }
   }
+  Promise.all([requestBatch])
+    .then(x=>console.log(x));
 }
 
 function setInnerHTML(elm, html) {

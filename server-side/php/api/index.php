@@ -22,6 +22,7 @@
   require 'classes/DatabaseController.php';
   require 'classes/DatabaseConnection.php';
   require 'classes/exceptions/SQLTableException.php';
+  require 'classes/exceptions/NotPermittedException.php';
 
   $dotenv = new DotEnv('.env');
   $dotenv->load();
