@@ -54,13 +54,13 @@ git update-index --skip-worktree server-side/.env
 - [x] ~~Create database relations to store class data~~
 - [x] ~~Create server side scripts to access database data securely~~
 - [ ] Fix edge-cases, e.g. student has no course entries
-- [ ] Store Google Calendar secondary calendar id on database so app knows when already created
+- [x] Store Google Calendar secondary calendar id on database so app knows when already created
 - [ ] Create admin script for adding data to database
 
 ### Client Side
 - [x] ~~Sign user in using email confirmation~~
 - [x] ~~Create client side scripts to get database data based on user sign in~~
-- [ ] Apply request batching to Google Calendar API for speed
+- [ ] Apply request batching to Google Calendar API for speed + req count
 - [x] ~~Move keys to .env file~~
 - [ ] Create user UI for changing options (create new secondary calendar y/n, secondary calendar name, color, etc)
 
