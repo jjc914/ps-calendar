@@ -73,7 +73,70 @@ secret = ?, active = 0', 'iss', $id, $secret, $secret);
       $results = $this->run_statement('UPDATE user SET calendar_id = ? WHERE id = ? AND secret = ?', 'sis', $calendarid, $id, $secret);
     }
 
-    public function get_cycle_days($courseid) {
+    public function post_delete_student($adminuser, $adminpass) {
+      if ($adminuser != getenv('ADMIN_USER') || $adminpass != getenv('ADMIN_PASS')) {
+        throw new NotPermittedException('Action not permitted');
+      }
+      $this->run_statement('TRUNCATE TABLE student');
+      $this->run_statement('TRUNCATE TABLE student_course');
+    }
+
+    public function post_delete_course($adminuser, $adminpass) {
+      if ($adminuser != getenv('ADMIN_USER') || $adminpass != getenv('ADMIN_PASS')) {
+        throw new NotPermittedException('Action not permitted');
+      }
+      $this->run_statement('TRUNCATE TABLE course');
+      $this->run_statement('TRUNCATE TABLE course_day');
+    }
+
+    public function post_delete_calendar($adminuser, $adminpass) {
+      if ($adminuser != getenv('ADMIN_USER') || $adminpass != getenv('ADMIN_PASS')) {
+        throw new NotPermittedException('Action not permitted');
+      }
+      $this->run_statement('TRUNCATE TABLE day');
+    }
+
+    public function post_add_calendar($adminuser, $adminpass, $data) {
+      if ($adminuser != getenv('ADMIN_USER') || $adminpass != getenv('ADMIN_PASS')) {
+        throw new NotPermittedException('Action not permitted');
+      }
+      $json = json_decode($data, true);
+      $this->run_statement('INSERT INTO day (cycle_day, cycle) VALUES (?, ?)', 'ss', $json['cycle_day'], $json['cycle']);
+    }
+
+    public function post_add_course($adminuser, $adminpass, $data) {
+      if ($adminuser != getenv('ADMIN_USER') || $adminpass != getenv('ADMIN_PASS')) {
+        throw new NotPermittedException('Action not permitted');
+      }
+      $json = json_decode($data, true);
+      $this->run_statement('INSERT INTO course (name, id, section, room, teacher, expression) VALUES (?, ?, ?, ?, ?, ?)', 'siiiss', $json['name'], $json['id'], $json['section'], $json['room'], $json['teacher'], $json['expression']);
+    }
+
+    public function post_add_student($adminuser, $adminpass, $data) {
+      if ($adminuser != getenv('ADMIN_USER') || $adminpass != getenv('ADMIN_PASS')) {
+        throw new NotPermittedException('Action not permitted');
+      }
+      $json = json_decode($data, true);
+      $this->run_statement('INSERT INTO student (name, id, email, grade, gender) VALUES (?, ?, ?, ?, ?)', 'sisis', $json['name'], $json['id'], $json['email'], $json['grade'], $json['gender']);
+    }
+
+    public function post_add_student_course($adminuser, $adminpass, $data) {
+      if ($adminuser != getenv('ADMIN_USER') || $adminpass != getenv('ADMIN_PASS')) {
+        throw new NotPermittedException('Action not permitted');
+      }
+      $json = json_decode($data, true);
+      $this->run_statement('INSERT INTO student_course (student_id, course_id) VALUES (?, ?)', 'ii', $json['student_id'], $json['course_id']);
+    }
+
+    public function post_add_course_day($adminuser, $adminpass, $data) {
+      if ($adminuser != getenv('ADMIN_USER') || $adminpass != getenv('ADMIN_PASS')) {
+        throw new NotPermittedException('Action not permitted');
+      }
+      $json = json_decode($data, true);
+      $this->run_statement('INSERT INTO course_day (course_id, cycle_day, period) VALUES (?, ?, ?)', 'iss', $json['course_id'], $json['cycle_day'], $json['period']);
+  }
+
+    public function get_course_days($courseid) {
       $coursedaymap = $this->run_statement('SELECT * FROM course_day WHERE course_id = ?', 'i', $courseid);
       return json_encode($coursedaymap);
     }
