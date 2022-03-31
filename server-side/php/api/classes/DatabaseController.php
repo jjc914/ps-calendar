@@ -41,6 +41,9 @@
         case 'courses':
           $output = $this->dbconnection->get_courses($_GET['id'], $_GET['secret']);
           break;
+        case 'calendarid':
+          $output = $this->dbconnection->get_student_calendar_id($_GET['id'], $_GET['secret']);
+          break;
         default:
           $this->errorheader = $_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found';
           break;
@@ -98,6 +101,8 @@
         case 'logout':
           $this->dbconnection->post_logout($_POST['id'], $_POST['secret']);
           break;
+        case 'calendarid':
+          $this->dbconnection->post_student_calendar_id($_POST['id'], $_POST['secret'], $_POST['calendarid']);
         default:
           $this->errorheader = $_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found';
           break;

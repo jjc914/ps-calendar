@@ -25,7 +25,8 @@ function initGoogleClient() {
 
 function updateGoogleSignInStatus(isSignedIn) {
   if (isSignedIn) {
-    window.onbeforeunload = onPSSignOut;
+    // TODO: Uncomment this line
+    // window.onbeforeunload = onPSSignOut;
     getCalendarDays();
   } else {
     checkPSSignedIn();
@@ -40,11 +41,10 @@ function checkPSSignedIn() {
   let urlData = window.location.search.substring(1);
 
   let xHttp = new XMLHttpRequest();
-  let url = config['SERVER_ROOT'] + '/php/api/index.php/student/login';
+  let url = config['SERVER_ROOT'] + 'php/api/index.php/student/login?id=';
   let email = document.getElementById('emailInput').value;
   xHttp.open('POST', url, true);
   xHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
   xHttp.onreadystatechange = function() {
     if (xHttp.readyState == 4 && xHttp.status == 200) {
       handleGoogleSignIn();
@@ -59,14 +59,13 @@ function onPSSignOut() {
   let urlData = window.location.search;
 
   let xHttp = new XMLHttpRequest();
-  let url = config['SERVER_ROOT'] + '/php/api/index.php/student/logout';
+  let url = config['SERVER_ROOT'] + 'php/api/index.php/student/logout';
   xHttp.open('POST', url, true);
   xHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xHttp.onreadystatechange = function() {
     if (xHttp.status == 200 && xHttp.readyState == 4) {
     }
   }
-  console.log(urlData.substring(1));
   xHttp.send(urlData.substring(1));
 
   gapi.auth2.getAuthInstance().signOut();
@@ -85,7 +84,7 @@ function getCalendarDays() {
       getCourses(dayMap);
     }
   };
-  xHttp.open('GET', config['SERVER_ROOT'] + '/php/api/index.php/calendar/days', true);
+  xHttp.open('GET', config['SERVER_ROOT'] + 'php/api/index.php/calendar/days', true);
   xHttp.setRequestHeader('Content-type', 'text/plain');
   xHttp.send();
 }
@@ -100,7 +99,7 @@ function getCourses(dayMap) {
       getCourseDays(courses, dayMap);
     }
   };
-  xHttp.open('GET', config['SERVER_ROOT'] + '/php/api/index.php/student/courses?' + urlData.substring(1), true);
+  xHttp.open('GET', config['SERVER_ROOT'] + 'php/api/index.php/student/courses?' + urlData.substring(1), true);
   xHttp.setRequestHeader('Content-type', 'text/plain');
   xHttp.send();
 }
@@ -137,19 +136,61 @@ function getCourseDays(courses, dayMap) {
 }
 
 function createSecondaryCalendar(dayMap, courseDays, periodTimes) {
-  console.log(gapi.client.calendar.calendars);
-
   let calendarRequest = gapi.client.calendar.calendars.insert({
     'resource': {
       'summary': 'PowerSchool Schedule'
     }
   });
   calendarRequest.execute(function(calendar) {
-    addCalendarEvents(calendar.id, dayMap, courseDays, periodTimes);
+    console.log(calendar);
+    initCalendar(calendar.id, dayMap, courseDays, periodTimes);
   });
 }
 
+function initCalendar(calendarID, dayMap, courseDays, periodTimes) {
+  let xHttp = new XMLHttpRequest();
+  let url = config['SERVER_ROOT'] + 'php/api/index.php/student/calendarid';
+
+  xHttp.open('GET', url, true);
+  xHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xHttp.onreadystatechange = function() {
+    if (xHttp.readyState == 4 && xHttp.status == 200) {
+      if (xHttp.responseText) {
+        console.log("Delete");
+        let calendarRequest = gapi.client.calendar.calendars.delete({
+          'calendarId': xHttp.responseText
+        });
+        calendarRequest.execute(function(calendar) {
+          addCalendarEvents(calendarID, dayMap, courseDays, periodTimes);
+        });
+      } else {
+        addCalendarEvents(calendarID, dayMap, courseDays, periodTimes);
+      }
+
+    } else if (xHttp.status == 500) {
+      handlePSNotSignedIn(xHttp);
+    }
+  }
+  xHttp.send();
+}
+
 function addCalendarEvents(calendarID, dayMap, courseDays, periodTimes) {
+  let urlData = window.location.search;
+
+  let xHttp = new XMLHttpRequest();
+  let url = config['SERVER_ROOT'] + 'php/api/index.php/student/calendarid';
+  xHttp.open('POST', url, true);
+  xHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+  xHttp.onreadystatechange = function() {
+    if (xHttp.readyState == 4 && xHttp.status == 200) {
+      console.log(xHttp.responseText);
+    } else if (xHttp.status == 500) {
+      handlePSNotSignedIn(xHttp);
+    }
+  }
+  xHttp.send(urlData.substring(1) + '&calendarid=' + calendarID);
+
   for (let i = 0; i < dayMap.length; i++) {
     let classes = [];
     for (let k = 0; k < courseDays.length; k++) {
