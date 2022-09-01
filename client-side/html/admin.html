@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>PS Admin</title>
+  <link rel="stylesheet" href="../styles/admin.css">
+</head>
+
+<body>
+  <script src="../js/loadConfig.js"></script>
+  <script src="../js/lib/papaparse.js"></script>
+  <script src="../js/admin.js" defer></script>
+  <h1>Calendar CSV</h1>
+  <input id="calendarInputCSV" type="file" name="fileUpload" accept=".csv" onclick="this.value = null">
+  <details>
+    <summary>Advanced</summary>
+    <input class="inputBox" id="dayNameKeyInput" type="text" name="dayName" placeholder="CYCLE_DAY.DAY_NAME">
+    <input class="inputBox" id="dayDateValueKeyInput" type="text" name="dayDateValue" placeholder="CYCLE_DAY.DATE_VALUE">
+  </details>
+  <p>This file should contain every cycle day and its respective calendar date. </p>
+  <h1>Timetables CSV</h1>
+  <input id="timetablesInputCSV" type="file" name="fileUpload" accept=".csv" onclick="this.value = null">
+  <details>
+    <summary>Advanced</summary>
+    <input class="inputBox" id="studentNameKeyInput" type="text" name="dayDateValue" placeholder="STUDENTS.Student">
+    <input class="inputBox" id="studentIDKeyInput" type="text" name="dayDateValue" placeholder="STUDENTS.LID">
+    <input class="inputBox" id="studentGradeKeyInput" type="text" name="dayDateValue" placeholder="STUDENTS.Grade">
+    <input class="inputBox" id="studentGenderKeyInput" type="text" name="dayDateValue" placeholder="STUDENTS.Gender">
+    <input class="inputBox" id="studentCourseNameKeyInput" type="text" name="dayDateValue" placeholder="STUDENTS.Course">
+    <input class="inputBox" id="studentCourseIDKeyInput" type="text" name="dayDateValue" placeholder="STUDENTS.Course_Number">
+    <input class="inputBox" id="studentCourseSectionKeyInput" type="text" name="dayDateValue" placeholder="STUDENTS.Section">
+    <input class="inputBox" id="studentCourseExpKeyInput" type="text" name="dayDateValue" placeholder="STUDENTS.Exp">
+    <input class="inputBox" id="studentCourseRoomKeyInput" type="text" name="dayDateValue" placeholder="STUDENTS.Room">
+    <input class="inputBox" id="studentCourseTeacherKeyInput" type="text" name="dayDateValue" placeholder="STUDENTS.Teacher">
+  </details>
+  <p>hi there</p>
+  <h1>Person Info CSV</h1>
+  <input id="infoInputCSV" type="file" name="fileUpload" accept=".csv" onclick="this.value = null">
+  <details>
+    <summary>Advanced</summary>
+    <input class="inputBox" id="studentNumberKeyInput" type="text" name="dayDateValue" placeholder="STUDENTS.STUDENT_NUMBER">
+    <input class="inputBox" id="studentLastFirstKeyInput" type="text" name="dayDateValue" placeholder="STUDENTS.LastFirst">
+    <input class="inputBox" id="studentEmailKeyInput" type="text" name="dayDateValue" placeholder="STUDENTS.CIS_STUDENTEMAIL">
+  </details>
+  <p>hi there</p>
+  <input id="submit" type="button" name="submit" value="Submit">
+</body>
+
+</html>

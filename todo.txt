@@ -1,0 +1,5 @@
+1. No need email confirmation, just use google login (idk)
+2. Create website admin page
+3. Test lagos data
+4. Lmfao should actually make a UI
+5. Refactor code for async (login.js)

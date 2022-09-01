@@ -19,6 +19,7 @@ def uploadCalendar(adminuser: str, adminpass: str, days: list[dict[str, str]]) -
     url = 'http://localhost:8888/server-side/php/api/index.php/calendar'
     for day in days:
         data = { 'adminuser': adminuser, 'adminpass': adminpass, 'data': json.dumps(day) }
+        # print(data)
         requests.post(url, data=data)
 
 def uploadCourses(adminuser: str, adminpass: str, courses: dict[str, str]) -> None:
@@ -31,7 +32,9 @@ def uploadStudents(adminuser: str, adminpass: str, students: dict[str, str]) -> 
     url = 'http://localhost:8888/server-side/php/api/index.php/student'
     for student in students:
         data = { 'adminuser': adminuser, 'adminpass': adminpass, 'data': json.dumps(students[student]) }
-        requests.post(url, data=data)
+        print(students[student])
+        x = requests.post(url, data=data)
+        # print(x, x.text)
 
 def uploadStudentCourses(adminuser: str, adminpass: str, studentCourses: list[dict[str, str]]) -> None:
     url = 'http://localhost:8888/server-side/php/api/index.php/student/course'

@@ -35,16 +35,14 @@
       $bytes = random_bytes(16);
       $secret = bin2hex($bytes);
 
-      $results = $this->run_statement('INSERT INTO user (id, secret) VALUES (?, ?) ON DUPLICATE KEY UPDATE
-secret = ?, active = 0', 'iss', $id, $secret, $secret);
+      $results = $this->run_statement('INSERT INTO user (id, secret) VALUES (?, ?) ON DUPLICATE KEY UPDATE secret = ?, active = 0', 'iss', $id, $secret, $secret);
 
       $state = new stdClass();
       $state->id = $id;
       $state->secret = $secret;
 
-      $subject = 'test';
+      $subject = 'PSCalendar Confirmation';
       $message = getenv('URL_ROOT') . 'client-side/html/login.html?id=' . $id . '&secret=' . $secret;
-      // $message = 'https://accounts.google.com/o/oauth2/v2/auth/identifier?response_type=code&client_id=253727930094-nl6m9igcuk2lhdc4qlva72em4kfuqa01.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8888%2Fclient-side%2Fhtml%2Flogin.html&scope=openid%20profile%20email&state=' . urlencode(json_encode($state)) . '&nonce=8qsujb9GS0vsnV3WCH6D&flowName=GeneralOAuthFlow';
       $headers = 'from: noreply@chasnov.joshua.com\r\n';
       mail($email, $subject, $message, $headers);
     }
@@ -96,6 +94,12 @@ secret = ?, active = 0', 'iss', $id, $secret, $secret);
       $this->run_statement('TRUNCATE TABLE day');
     }
 
+    public function post_admin_checkauth($adminuser, $adminpass) {
+      if ($adminuser != getenv('ADMIN_USER') || $adminpass != getenv('ADMIN_PASS')) {
+        throw new NotPermittedException('Action not permitted');
+      }
+    }
+
     public function post_add_calendar($adminuser, $adminpass, $data) {
       if ($adminuser != getenv('ADMIN_USER') || $adminpass != getenv('ADMIN_PASS')) {
         throw new NotPermittedException('Action not permitted');
@@ -117,7 +121,7 @@ secret = ?, active = 0', 'iss', $id, $secret, $secret);
         throw new NotPermittedException('Action not permitted');
       }
       $json = json_decode($data, true);
-      $this->run_statement('INSERT INTO student (name, id, email, grade, gender) VALUES (?, ?, ?, ?, ?)', 'sisis', $json['name'], $json['id'], $json['email'], $json['grade'], $json['gender']);
+      $this->run_statement('INSERT INTO student (name, id, email) VALUES (?, ?, ?)', 'sis', $json['name'], $json['id'], $json['email']);
     }
 
     public function post_add_student_course($adminuser, $adminpass, $data) {

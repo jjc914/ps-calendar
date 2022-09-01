@@ -87,7 +87,10 @@
           $this->process_calendar_post_request();
           break;
         case 'delete':
-          $this->process_post_delete_request();
+          $this->process_delete_post_request();
+          break;
+        case 'admin':
+          $this->process_admin_post_request();
           break;
         default:
           $this->errorheader = $_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found';
@@ -154,7 +157,7 @@
       }
     }
 
-    protected function process_post_delete_request() {
+    protected function process_delete_post_request() {
       switch ($this->params[1]) {
         case 'student':
           $this->dbconnection->post_delete_student($_POST['adminuser'], $_POST['adminpass']);
@@ -164,6 +167,16 @@
           break;
         case 'calendar':
           $this->dbconnection->post_delete_calendar($_POST['adminuser'], $_POST['adminpass']);
+          break;
+        default:
+          $this->errorheader = $_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found';
+      }
+    }
+
+    protected function process_admin_post_request() {
+      switch ($this->params[1]) {
+        case 'checkauth':
+          $this->dbconnection->post_admin_checkauth($_POST['adminuser'], $_POST['adminpass']);
           break;
         default:
           $this->errorheader = $_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found';

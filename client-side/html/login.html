@@ -1,23 +1,27 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 
-<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <title>PS Login</title>
-
-  <link rel="stylesheet" href="../styles/register.css">
+  <link rel="stylesheet" href="../styles/login.css">
 </head>
 
 <body>
   <script src="../js/loadConfig.js"></script>
   <script src="../js/login.js" defer></script>
-  <script defer src="https://apis.google.com/js/api.js"
-      onload="handleGoogleClientLoad()"
-      onreadystatechange="if (this.readyState === 'complete') handleGoogleClientLoad()">
-    </script>
-  <p id="emailInput"></p>
+  <script defer src="https://apis.google.com/js/api.js" onload="handleGoogleClientLoad()" onreadystatechange="if (this.readyState === 'complete') handleGoogleClientLoad()"></script>
+  <div class="container">
+    <img class="status-still" id="loadingStatus" src="../res/loading.svg"/>
+    <div class="bar-border">
+      <div class="bar-content" id="bar"></div>
+    </div>
+    <div class="bar-status" id="status">
+      Loading...
+    </div>
+  </div>
   <div id="content"></div>
 </body>
+
 </html>
