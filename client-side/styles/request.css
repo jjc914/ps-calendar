@@ -1,0 +1,26 @@
+.logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 15%;
+}
+
+.input {
+  margin-top: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.container {
+  margin: 0;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  width: 100%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+#confirmationText {
+  width: 100%;
+}

@@ -1,0 +1,63 @@
+.bar-border {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
+  margin-top: 0;
+  display: block;
+  width: 50%;
+  height: 20px;
+  outline: solid;
+  outline-color: black;
+  outline-width: 1px;
+  border-radius: 2px;
+}
+
+.bar-content {
+  background: rgb(119, 21, 12);
+  width: 0%;
+  height: 20px;
+  transition: 150ms linear;
+}
+
+.bar-status {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.container {
+  margin: 0;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  width: 100%;
+}
+
+.status-rotate {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 5%;
+  height: auto;
+  margin-bottom: 20px;
+  animation: rotation 1s infinite linear;
+}
+
+.status-still {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 5%;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
+}

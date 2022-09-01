@@ -13,8 +13,8 @@ def main():
     deleteCourse(adminUsername, adminPassword)
     deleteCalendar(adminUsername, adminPassword)
 
-    days = readCycleCSV('res/StudentTimeTableToGoogleCalendarDay.csv')
-    courses, courseDays, students, studentCourses = readStudentCSV('res/StudentTimeTableToGoogleCC.csv')
+    days = readCycleCSV('res/StudentTimeTableToGoogleCalendarDay (1).csv')
+    courses, courseDays, students, studentCourses = readStudentCSV('res/StudentTimeTableToGoogleCC (1).csv')
 
     uploadCalendar(adminUsername, adminPassword, days)
     uploadCourses(adminUsername, adminPassword, courses)

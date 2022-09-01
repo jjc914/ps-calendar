@@ -1,11 +1,12 @@
 var config = {};
 
 let req = new XMLHttpRequest();
-req.open('GET', '../.config', false);
+req.open('GET', '../config', false);
 req.send();
 if (req.status == 200) {
   load(req.response);
 } else {
+  alert(req.response);
   alert('.config not found.');
 }
 

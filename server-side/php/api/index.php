@@ -19,13 +19,13 @@
     die();
   }
 
+  $dotenv = new DotEnv('.env');
+  $dotenv->load();
+
   require 'classes/DatabaseController.php';
   require 'classes/DatabaseConnection.php';
   require 'classes/exceptions/SQLTableException.php';
   require 'classes/exceptions/NotPermittedException.php';
-
-  $dotenv = new DotEnv('.env');
-  $dotenv->load();
 
   $controller = new DatabaseController('powerschool_data', $_SERVER['REQUEST_METHOD']);
   $controller->process_request();
